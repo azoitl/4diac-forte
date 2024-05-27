@@ -16,18 +16,6 @@
 #endif
 #include <boost/test/unit_test.hpp>
 
-const static SFBInterfaceSpec gscTestDevSpec = {
-  0, nullptr, nullptr, nullptr,
-  0, nullptr, nullptr, nullptr,
-  0, nullptr, nullptr,
-  0, nullptr, nullptr,
-  0, nullptr,
-  0, nullptr
-};
-
-CDevice *CFBTestDataGlobalFixture::smTestDev;
-CResource *CFBTestDataGlobalFixture::smTestRes;
-
 class CTesterDevice : public CDevice {
   public:
     CTesterDevice(const SFBInterfaceSpec *paInterfaceSpec, const CStringDictionary::TStringId paInstanceNameId) :
@@ -38,7 +26,21 @@ class CTesterDevice : public CDevice {
       // nothing to be done to join
     }
 
+    friend CFBTestDataGlobalFixture;
+
 };
+
+const static SFBInterfaceSpec gscTestDevSpec = {
+  0, nullptr, nullptr, nullptr,
+  0, nullptr, nullptr, nullptr,
+  0, nullptr, nullptr,
+  0, nullptr, nullptr,
+  0, nullptr,
+  0, nullptr
+};
+
+CTesterDevice *CFBTestDataGlobalFixture::smTestDev;
+CResource *CFBTestDataGlobalFixture::smTestRes;
 
 CFBTestDataGlobalFixture::CFBTestDataGlobalFixture(){
   //setup is done in the setup so that boost_test can throw exceptions
