@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2005 - 2015 ACIN, Profactor GmbH, fortiss GmbH
+ * Copyright (c) 2005, 2015 ACIN, Profactor GmbH, fortiss GmbH,
+ *                          Primetals Technologies Austria GmbH
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -15,6 +16,15 @@
 #include "RMT_DEV_gen.cpp"
 #endif
 #include <stringdict.h>
+
+CDevice* CDevice::createDev(const std::string &paMGRID) {
+  RMT_DEV *dev = new RMT_DEV;
+  dev->initialize();
+  if(paMGRID.length() != 0){
+    dev->setMGR_ID(paMGRID);
+  }
+  return dev;
+}
 
 const CStringDictionary::TStringId RMT_DEV::scmDINameIds[] = { g_nStringIdMGR_ID };
 const CStringDictionary::TStringId RMT_DEV::scmDIDataTypeIds[] = {g_nStringIdWSTRING};
@@ -66,6 +76,6 @@ EMGMResponse RMT_DEV::changeFBExecutionState(EMGMCommandType paCommand){
   return eRetVal;
 }
 
-void RMT_DEV::setMGR_ID(const char * const paConn){
-  MGR_ID().fromString(paConn);
+void RMT_DEV::setMGR_ID(const std::string& paVal){
+  MGR_ID().fromString(paVal.c_str());
 }
