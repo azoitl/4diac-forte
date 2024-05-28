@@ -268,7 +268,6 @@ GET_PROPERTY(devices GLOBAL PROPERTY FORTE_DEVICES)
 list(SORT devices)
 set_property(CACHE FORTE_DEVICE PROPERTY STRINGS None ${devices})
 
-
 #######################################################################################
 # Link Libraries to the Executable
 #######################################################################################

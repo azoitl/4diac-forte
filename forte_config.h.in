@@ -55,6 +55,9 @@ const unsigned int cgIPLayerRecvBufferSize = ${FORTE_IPLayerRecvBufferSize};
 //! Max supported hierarchy that can be provided in a management commands
 #define FORTE_MGM_MAX_SUPPORTED_NAME_HIERARCHY   ${FORTE_MGM_MAX_SUPPORTED_NAME_HIERACHY}
 
+#define FORTE_DEVICE ${FORTE_DEVICE}
+#define FORTE_DEVICE_INCLUDE "${FORTE_DEVICE}.h"
+
 /*! \brief FORTE string dict's initial string buffer size
  * 
  * Depending on the FORTE_STRING_DICT_FIXED_MEMORY flag the string dict will reallocate if necessary.
