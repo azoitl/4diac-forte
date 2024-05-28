@@ -17,7 +17,7 @@
 #include "ecet.h"
 #include <string.h>
 
-#include FORTE_DEVICE_INCLUDE
+#include "forte_device_config.h"
 
 std::unique_ptr<CDevice> CDevice::smActiveDevice;
 
