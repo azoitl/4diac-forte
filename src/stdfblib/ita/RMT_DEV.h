@@ -29,7 +29,7 @@
 
     bool initialize() override;
 
-    static CDevice *createDev(const std::string &paMGRID);
+    static std::unique_ptr<CDevice> createDev(const std::string &paMGRID);
 
   /*! \brief Adds additional functionality to the originals execute func of the device.
   *

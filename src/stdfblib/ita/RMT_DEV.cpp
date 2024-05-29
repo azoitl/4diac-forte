@@ -17,8 +17,10 @@
 #endif
 #include <stringdict.h>
 
-CDevice* RMT_DEV::createDev(const std::string &paMGRID) {
-  RMT_DEV *dev = new RMT_DEV;
+std::unique_ptr<CDevice>  RMT_DEV::createDev(const std::string &paMGRID) {
+  std::unique_ptr<RMT_DEV> dev = std::make_unique<RMT_DEV>();
+
+//  RMT_DEV *dev = new RMT_DEV;
   dev->initialize();
   if(paMGRID.length() != 0){
     dev->setMGR_ID(paMGRID);

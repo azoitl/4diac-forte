@@ -21,7 +21,7 @@ OPCUA_DEV::OPCUA_DEV() :
 OPCUA_DEV::~OPCUA_DEV() {
 }
 
-CDevice* OPCUA_DEV::createDev(const std::string &paMGRID) {
+std::unique_ptr<CDevice> OPCUA_DEV::createDev(const std::string &paMGRID) {
   OPCUA_DEV *dev = new OPCUA_DEV;
   dev->initialize();
   if(paMGRID.length() != 0){
