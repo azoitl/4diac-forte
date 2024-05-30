@@ -33,7 +33,7 @@ class C4diacFORTEInstance {
      * \return pointer to the newly created device, nullptr if it could not be created.
      *
      */
-    static std::unique_ptr<CDevice>  createDev(const std::string &paMGRID);
+    static std::unique_ptr<CDevice> createDev(const std::string &paMGRID);
 
     std::unique_ptr<CDevice> mActiveDevice;
 

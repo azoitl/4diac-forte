@@ -24,12 +24,10 @@
 
  class RMT_DEV : public CDevice{
   public:
-    RMT_DEV();
+    RMT_DEV(const std::string& paMGRID = "localhost:61499");
     ~RMT_DEV() override;
 
     bool initialize() override;
-
-    static std::unique_ptr<CDevice> createDev(const std::string &paMGRID);
 
   /*! \brief Adds additional functionality to the originals execute func of the device.
   *
@@ -40,8 +38,6 @@
     void awaitShutdown() override;
 
     EMGMResponse changeFBExecutionState(EMGMCommandType paCommand) override;
-
-    void setMGR_ID(const std::string& paVal);
 
   private:
     CInterface2InternalDataConnection mDConnMGR_ID;
@@ -56,6 +52,8 @@
     }
 
     RMT_RES MGR;
+
+    std::string mMGRID;
 };
 
 #endif /*RMT_DEV_H_*/

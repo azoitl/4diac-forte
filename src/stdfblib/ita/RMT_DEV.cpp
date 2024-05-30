@@ -17,17 +17,6 @@
 #endif
 #include <stringdict.h>
 
-std::unique_ptr<CDevice>  RMT_DEV::createDev(const std::string &paMGRID) {
-  std::unique_ptr<RMT_DEV> dev = std::make_unique<RMT_DEV>();
-
-//  RMT_DEV *dev = new RMT_DEV;
-  dev->initialize();
-  if(paMGRID.length() != 0){
-    dev->setMGR_ID(paMGRID);
-  }
-  return dev;
-}
-
 const CStringDictionary::TStringId RMT_DEV::scmDINameIds[] = { g_nStringIdMGR_ID };
 const CStringDictionary::TStringId RMT_DEV::scmDIDataTypeIds[] = {g_nStringIdWSTRING};
 
@@ -40,17 +29,20 @@ const SFBInterfaceSpec RMT_DEV::scmFBInterfaceSpec = {
   0, nullptr
 };
 
-RMT_DEV::RMT_DEV() :
+RMT_DEV::RMT_DEV(const std::string& paMGRID) :
   CDevice(&scmFBInterfaceSpec, CStringDictionary::scmInvalidStringId),
-      MGR(g_nStringIdMGR, *this){
+      MGR(g_nStringIdMGR, *this), mMGRID(paMGRID) {
 }
 
 bool RMT_DEV::initialize() {
   if(!CDevice::initialize()) {
     return false;
   }
+
   MGR.initialize();
-  MGR_ID().fromString("localhost:61499");
+  if(mMGRID.length() != 0){
+    MGR_ID().fromString(mMGRID.c_str());
+  }
 
   //we nee to manually crate this interface2internal connection as the MGR is not managed by device
   mDConnMGR_ID.setSource(this, 0);
@@ -76,8 +68,4 @@ EMGMResponse RMT_DEV::changeFBExecutionState(EMGMCommandType paCommand){
     MGR.changeFBExecutionState(EMGMCommandType::Kill);
   }
   return eRetVal;
-}
-
-void RMT_DEV::setMGR_ID(const std::string& paVal){
-  MGR_ID().fromString(paVal.c_str());
 }

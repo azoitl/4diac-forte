@@ -17,7 +17,7 @@
 
 
 std::unique_ptr<CDevice> C4diacFORTEInstance::createDev(const std::string &paMGRID) {
-  return FORTE_DEVICE::createDev(paMGRID);
+  return std::make_unique<FORTE_DEVICE>(paMGRID);
 }
 
 bool C4diacFORTEInstance::startupNewDevice(const std::string &paMGRID){
@@ -26,8 +26,9 @@ bool C4diacFORTEInstance::startupNewDevice(const std::string &paMGRID){
     triggerDeviceShutdown();
     awaitDeviceShutdown();
   }
-  mActiveDevice = createDev(paMGRID);
+  mActiveDevice = C4diacFORTEInstance::createDev(paMGRID);
   if(mActiveDevice){
+    mActiveDevice->initialize();
     mActiveDevice->startDevice();
   }
   return mActiveDevice.operator bool();

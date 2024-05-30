@@ -21,10 +21,8 @@ public:
 
   OPCUA_MGR mOPCUAMgr;
 
-  OPCUA_DEV();
+  OPCUA_DEV(const std::string& paMGRID);
   virtual ~OPCUA_DEV();
-
-  static std::unique_ptr<CDevice> createDev(const std::string &paMGRID);
 
   virtual int startDevice(void);
 };
