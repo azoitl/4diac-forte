@@ -103,24 +103,6 @@ CIEC_ANY* CBasicFB::getInternalVar(CStringDictionary::TStringId paInternalName) 
   return retVal;
 }
 
-TFunctionBlockPtr *CBasicFB::createInternalFBs(const size_t paAmountOfInternalFBs, const SCFB_FBInstanceData *const paInternalFBData, forte::core::CFBContainer &paContainer) {
-  TFunctionBlockPtr *internalFBs = nullptr;
-  if (paAmountOfInternalFBs) {
-    internalFBs = new TFunctionBlockPtr[paAmountOfInternalFBs];
-    for(size_t i = 0; i < paAmountOfInternalFBs; ++i) {
-      internalFBs[i] = CTypeLib::createFB(paInternalFBData[i].mFBInstanceNameId, paInternalFBData[i].mFBTypeNameId, paContainer);
-    }
-  }
-  return internalFBs;
-}
-
-void CBasicFB::deleteInternalFBs(const size_t paAmountOfInternalFBs, TFunctionBlockPtr *const paInternalFBs) {
-  for (size_t i = 0; i < paAmountOfInternalFBs; ++i) {
-    delete paInternalFBs[i];
-  }
-  delete[] paInternalFBs;
-};
-
 int CBasicFB::toString(char *paValue, size_t paBufferSize) const {
   int usedBuffer = CFunctionBlock::toString(paValue, paBufferSize);
   if (usedBuffer < 1 || cmVarInternals == nullptr || (cmVarInternals != nullptr && cmVarInternals->mNumIntVars == 0)) {
