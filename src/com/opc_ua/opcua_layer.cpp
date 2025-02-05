@@ -62,15 +62,19 @@ EComResponse COPC_UA_Layer::openConnection(char *paLayerParameter) {
       } else {
         return response;
       }
-      
       CActionInfo::UA_ActionType action = mActionInfo->getAction();
       mStructObjectHelper = std::make_unique<COPC_UA_ObjectStruct_Helper>(*this, mHandler);
-      if(COPC_UA_ObjectStruct_Helper::isStructType(*this, isPublisher) && mStructObjectHelper->checkStructTypeConnection(*mActionInfo, isPublisher) && (CActionInfo::eWrite == action || CActionInfo::eRead == action) ) {
+      if(COPC_UA_ObjectStruct_Helper::isStructType(*this, isPublisher) && (CActionInfo::eWrite == action || CActionInfo::eRead == action) ) {
         mIsObjectNodeStruct = true;
-        response = mStructObjectHelper->createObjectNode(*mActionInfo, isPublisher);
+        CIEC_ANY** apoDataPorts = isPublisher ? getCommFB()->getSDs() : getCommFB()->getRDs();
+        CIEC_STRUCT& structType = static_cast<CIEC_STRUCT&>(apoDataPorts[0]->unwrap());
+        if(!mStructObjectHelper->checkStructTypeConnection(*mActionInfo, structType)) {
+          return response;
+        }
+        response = mStructObjectHelper->createObjectNode(*mActionInfo, structType);
         if(!isPublisher && (response == e_InitOk)) {
           CCriticalRegion criticalRegion(mRDBufferMutex);
-          mRDBuffer = mStructObjectHelper->initializeRDBuffer();
+          mRDBuffer = mStructObjectHelper->initializeRDBuffer(structType);
         }
       }
     }   
@@ -155,8 +159,9 @@ EComResponse COPC_UA_Layer::sendData(void *, unsigned int) {
 
 EComResponse COPC_UA_Layer::processInterrupt() {
   CCriticalRegion criticalRegion(mRDBufferMutex);
-  if(mIsObjectNodeStruct) { 
-    COPC_UA_ObjectStruct_Helper::setMemberValues(getCommFB()->getRDs(), mRDBuffer);
+  if(mIsObjectNodeStruct) {
+    CIEC_STRUCT& structType = static_cast<CIEC_STRUCT&>(getCommFB()->getRDs()[0]->unwrap());
+    COPC_UA_ObjectStruct_Helper::setMemberValues(structType, mRDBuffer);
   } else {
     for(size_t i = 0; i < getCommFB()->getNumRD(); ++i) {
       getCommFB()->getRDs()[i]->setValue(*mRDBuffer[i]);

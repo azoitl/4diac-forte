@@ -30,6 +30,7 @@
 #include "forte_printer.h"
 #include "../../arch/utils/mainparam_utils.h"
 #include "opcua_local_handler.h"
+#include "struct_action_info.h"
 #ifdef FORTE_COM_OPC_UA_MULTICAST
 #include "detail/lds_me_handler.h"
 #endif //FORTE_COM_OPC_UA_MULTICAST
@@ -43,6 +44,7 @@ const char *const COPC_UA_Local_Handler::mEnglishLocaleForNodes = "en-US";
 const char *const COPC_UA_Local_Handler::mDefaultDescriptionForVariableNodes = "Digital port of Function Block";
 
 TForteUInt16 gOpcuaServerPort = FORTE_COM_OPC_UA_PORT;
+TForteUInt16 gOpcuaServerMaxIterationInterval = FORTE_COM_OPC_UA_SERVER_MAX_ITERATION_INTERVAL;
 
 using namespace forte::com_infra;
 using namespace std::string_literals;
@@ -104,8 +106,12 @@ void COPC_UA_Local_Handler::run() {
             CCriticalRegion criticalRegion(mServerAccessMutex);
             timeToSleepMs = UA_Server_run_iterate(mUaServer, false);
           }
+
           if(timeToSleepMs < scmMinimumIterationWaitTime) {
             timeToSleepMs = scmMinimumIterationWaitTime;
+          }
+          else if(timeToSleepMs > gOpcuaServerMaxIterationInterval) {
+            timeToSleepMs = gOpcuaServerMaxIterationInterval;
           }
 
           mServerNeedsIteration.timedWait(static_cast<TForteUInt64>(timeToSleepMs) * 1000000ULL);
@@ -353,6 +359,24 @@ UA_StatusCode COPC_UA_Local_Handler::executeAction(CActionInfo &paActionInfo) {
       break;
     default: //eCallMethod, eSubscribe will never reach here since they weren't initialized. eRead is a Subscribe FB
       DEVLOG_ERROR("[OPC UA LOCAL]: Action %d to be executed is unknown or invalid\n", paActionInfo.getAction());
+      break;
+  }
+
+  mServerNeedsIteration.inc();
+
+  return retVal;
+}
+
+UA_StatusCode COPC_UA_Local_Handler::executeStructAction(CActionInfo &paActionInfo, CIEC_ANY &paMember) {
+  UA_StatusCode retVal = UA_STATUSCODE_BADINTERNALERROR;
+
+  CCriticalRegion criticalRegion(mServerAccessMutex);
+  switch(paActionInfo.getAction()){
+    case CActionInfo::eWrite:
+      retVal = executeStructWrite(paActionInfo, paMember);
+      break;
+    default: //eCallMethod, eSubscribe will never reach here since they weren't initialized. eRead is a Subscribe FB
+      DEVLOG_ERROR("[OPC UA LOCAL]: Struct Action %d to be executed is unknown or invalid\n", paActionInfo.getAction());
       break;
   }
 
@@ -871,6 +895,34 @@ UA_StatusCode COPC_UA_Local_Handler::executeWrite(CActionInfo &paActionInfo) {
   return retVal;
 }
 
+UA_StatusCode COPC_UA_Local_Handler::executeStructWrite(CActionInfo &paActionInfo, CIEC_ANY &paMember) {
+  UA_StatusCode retVal = UA_STATUSCODE_GOOD;
+
+  if(paMember.getDataTypeID() == CIEC_ANY::e_STRUCT) {
+    CIEC_STRUCT& structType = static_cast<CIEC_STRUCT&>(paMember);
+    CStructActionInfo &structActionInfo = static_cast<CStructActionInfo&>(paActionInfo);
+    std::vector<std::shared_ptr<CActionInfo>> memberActionInfos = structActionInfo.getMemberActionInfos();
+    for(size_t i = 0; i < memberActionInfos.size(); i++) {
+      std::shared_ptr<CActionInfo> memberActionInfo = memberActionInfos[i];
+      CIEC_ANY *member = structType.getMember(i);
+      retVal = executeStructWrite(*memberActionInfo, *member);
+      if(retVal != UA_STATUSCODE_GOOD) {
+        return retVal;
+      }
+    }
+  } else {
+    auto it = paActionInfo.getNodePairInfo().begin();
+    retVal = updateNodeValue(*it->getNodeId(), &paMember);
+    if(UA_STATUSCODE_GOOD != retVal) {   
+      DEVLOG_ERROR("[OPC UA LOCAL]: Could not convert value to write for node %s at FB %s. Error: %s\n",
+        (*paActionInfo.getNodePairInfo().begin()).getBrowsePath(),
+        paActionInfo.getLayer().getCommFB()->getInstanceName(), UA_StatusCode_name(retVal));
+      return retVal;
+    }
+  }
+  return retVal;
+}
+
 UA_StatusCode COPC_UA_Local_Handler::executeCreateMethod(CActionInfo &paActionInfo) {
   //This is the return of a local method call, when RSP is triggered
 
@@ -988,6 +1040,7 @@ UA_StatusCode COPC_UA_Local_Handler::createObjectNode(const CCreateObjectInfo &p
     DEVLOG_ERROR("[OPC UA LOCAL]: Could not addObjectNode. Error: %s\n", UA_StatusCode_name(retVal));
   }
   UA_NodeId_clear(&requestedNodeId);
+  UA_NodeId_clear(&parentNodeId);
   UA_ObjectAttributes_clear(&oAttr);
 
   return retVal;
