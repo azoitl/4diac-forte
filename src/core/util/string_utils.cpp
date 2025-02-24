@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 fortiss GmbH
+ * Copyright (c) 2013, 2025 fortiss GmbH, Johannes Kepler University Linz
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
@@ -7,8 +7,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *   Alois Zoitl
- *    - initial API and implementation and/or initial documentation
+ *   Alois Zoitl - initial API and implementation and/or initial documentation
  *******************************************************************************/
 #include "string_utils.h"
 #include <forte_dint.h>
@@ -19,6 +18,21 @@
 
 #include <errno.h>
 #include <string.h>
+#include <array>
+#include <map>
+
+const auto scCharacters2Escape = std::array { '"', '\'', '&', '<', '>' };
+const auto scEscapeSequences  = std::array { "&quot;", "&apos;", "&amp;", "&lt;", "&gt;" };
+
+static_assert(scCharacters2Escape.size() == scEscapeSequences.size());
+
+const std::map<char, const char*> scEscapeMap = {
+    {scCharacters2Escape[0], scEscapeSequences[0]},
+    {scCharacters2Escape[1], scEscapeSequences[1]},
+    {scCharacters2Escape[2], scEscapeSequences[2]},
+    {scCharacters2Escape[3], scEscapeSequences[3]},
+    {scCharacters2Escape[4], scEscapeSequences[4]}
+};
 
 bool forte::core::util::isAtoFChar(char paValue){
   paValue = static_cast<char>(toupper(paValue));
@@ -203,11 +217,9 @@ unsigned long long int forte::core::util::strtoull(const char *nptr, char **endp
 size_t forte::core::util::getExtraSizeForXMLEscapedChars(const char* paString){
   size_t retVal = 0;
   while(0 != *paString){
-    for(size_t i = 0; i < sizeof(forte::core::util::scReplacementForXMLEscapedCharacters) / sizeof(const char* const); i++){
-      if(forte::core::util::scXMLEscapedCharacters[i] == *paString){
-        retVal += strlen(forte::core::util::scReplacementForXMLEscapedCharacters[i]) - 1;
-        break;
-      }
+    auto escapeChar = scEscapeMap.find(*paString);
+    if(escapeChar != scEscapeMap.end()){
+      retVal += strlen(escapeChar->second) - 1;
     }
     paString++;
   }
@@ -220,19 +232,11 @@ size_t forte::core::util::transformNonEscapedToEscapedXMLText(char* const paStri
   char* originalEnd = runner;
   runner--;
   while(paString <= runner){
-    const char* toCopy = nullptr;
-
-    for(size_t i = 0; i < sizeof(forte::core::util::scReplacementForXMLEscapedCharacters) / sizeof(const char* const ); i++){
-      if(forte::core::util::scXMLEscapedCharacters[i] == *runner){
-        toCopy = forte::core::util::scReplacementForXMLEscapedCharacters[i];
-        break;
-      }
-    }
-
-    if(nullptr != toCopy){
-      size_t toMove = strlen(toCopy);
+    auto escapeChar = scEscapeMap.find(*runner);
+    if(escapeChar != scEscapeMap.end()){
+      size_t toMove = strlen(escapeChar->second);
       memmove(&runner[toMove], runner + 1, originalEnd - runner + retVal);
-      memcpy(runner, toCopy, toMove);
+      memcpy(runner, escapeChar->second, toMove);
       retVal += toMove - 1;
     }
     runner--;
@@ -249,10 +253,10 @@ size_t forte::core::util::transformEscapedXMLToNonEscapedText(char* const paStri
       char toCopy = 0;
       size_t toMove = 0;
 
-      for(size_t i = 0; i < sizeof(forte::core::util::scReplacementForXMLEscapedCharacters) / sizeof(const char* const ); i++){
-        if(0 == strncmp(runner, forte::core::util::scReplacementForXMLEscapedCharacters[i], strlen(forte::core::util::scReplacementForXMLEscapedCharacters[i]))){
-          toCopy = forte::core::util::scXMLEscapedCharacters[i];
-          toMove = strlen(forte::core::util::scReplacementForXMLEscapedCharacters[i]);
+      for(size_t i = 0; i < scEscapeSequences.size(); i++){
+        if(0 == strncmp(runner, scEscapeSequences[i], strlen(scEscapeSequences[i]))){
+          toCopy = scCharacters2Escape[i];
+          toMove = strlen(scEscapeSequences[i]);
           break;
         }
       }
