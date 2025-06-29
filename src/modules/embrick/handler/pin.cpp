@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 #include "pin.h"
-#include <devlog.h>
+#include "arch/devlog.h"
 #include <unistd.h>
 #include <fcntl.h>
 

@@ -14,8 +14,8 @@
 #include "handle.h"
 #include "slave.h"
 #include <handler/bus.h>
-#include <io/mapper/io_mapper.h>
-#include <devlog.h>
+#include "core/io/mapper/io_mapper.h"
+#include "arch/devlog.h"
 
 EmbrickSlaveHandle::EmbrickSlaveHandle(forte::core::io::IODeviceController *paController,
                                        forte::core::io::IOMapper::Direction paDirection,

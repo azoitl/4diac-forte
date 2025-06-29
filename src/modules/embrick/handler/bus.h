@@ -14,12 +14,12 @@
 #ifndef SRC_MODULES_EMBRICK_BUSCONTROLLER_H_
 #define SRC_MODULES_EMBRICK_BUSCONTROLLER_H_
 
-#include <extevhan.h>
-#include <devlog.h>
+#include "core/extevhan.h"
+#include "arch/devlog.h"
 #include <sys/time.h>
 #include <stdio.h>
 #include <math.h>
-#include <timerha.h>
+#include "arch/timerha.h"
 #include <string>
 #include <pthread.h>
 #include "spi.h"
@@ -29,7 +29,7 @@
 #include <forte_sem.h>
 #include <forte_thread.h>
 
-#include <io/device/io_controller_multi.h>
+#include "core/io/device/io_controller_multi.h"
 
 const unsigned int TransferBufferLength = 150;
 const unsigned int SyncGapMultiplicator = 15;

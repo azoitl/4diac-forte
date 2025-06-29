@@ -17,8 +17,8 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <devlog.h>
-#include <forte_wstring.h>
+#include "arch/devlog.h"
+#include "core/datatypes/forte_wstring.h"
 #include <sys/ioctl.h>
 
 extern "C" { // missing in some versions of spidev.h

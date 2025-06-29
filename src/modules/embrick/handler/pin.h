@@ -16,7 +16,7 @@
 #define SRC_MODULES_EMBRICK_HANDLER_PIN_H_
 
 #include <string>
-#include <forte_wstring.h>
+#include "core/datatypes/forte_wstring.h"
 
 class EmbrickPinHandler {
     friend class EmbrickBusHandler;

@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 #include "Slave.h"
-#include <io/mapper/io_mapper.h>
+#include "core/io/mapper/io_mapper.h"
 
 USE_STRING_ID(BusAdapterIn);
 USE_STRING_ID(BusAdapterOut);

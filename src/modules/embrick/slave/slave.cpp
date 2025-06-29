@@ -14,9 +14,9 @@
 #include "slave.h"
 #include <cstddef>
 #include <handler/bus.h>
-#include <io/mapper/io_mapper.h>
-#include <processinterfacefb.h>
-#include "criticalregion.h"
+#include "core/io/mapper/io_mapper.h"
+#include "core/io/processinterfacefb.h"
+#include "core/util/criticalregion.h"
 
 const int EmbrickSlaveHandler::scmMaxUpdateErrors = 50;
 

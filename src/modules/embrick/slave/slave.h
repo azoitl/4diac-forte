@@ -21,10 +21,10 @@
 #include "handle.h"
 #include <stdint.h>
 #include <forte_sync.h>
-#include <forte_wstring.h>
-#include <devlog.h>
+#include "core/datatypes/forte_wstring.h"
+#include "arch/devlog.h"
 
-#include <io/mapper/io_mapper.h>
+#include "core/io/mapper/io_mapper.h"
 
 class EmbrickBusHandler;
 

@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 #include "analog10.h"
-#include "criticalregion.h"
+#include "core/util/criticalregion.h"
 
 EmbrickAnalog10SlaveHandle::EmbrickAnalog10SlaveHandle(forte::core::io::IODeviceController *paController,
                                                        forte::core::io::IOMapper::Direction paDirection,
