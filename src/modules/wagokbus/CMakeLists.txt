@@ -14,9 +14,11 @@
 #############################################################################
 # WAGO KBUS SIFBs
 #############################################################################
-if("${FORTE_ARCHITECTURE}" STREQUAL "Posix")
-# FIXME: shouldn't this be io, not module?
-forte_add_module(WagoKbus OFF "Wago Kbus interface" FORTE_IO)
+if (NOT FORTE_ARCHITECTURE STREQUAL "Posix")
+    return()
+endif ()
+
+forte_register_io(WagoKbus OFF "Support for Revolution Pi")
 
 forte_add_include_directories(${CMAKE_CURRENT_SOURCE_DIR})  
 forte_add_sourcefile_hcpp(WagoHandle WagoDeviceController)
