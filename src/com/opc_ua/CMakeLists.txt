@@ -161,8 +161,8 @@ add_library(forte-com-opc_ua OBJECT
             opcua_client_config_parser.cpp
 )
 target_link_libraries(forte PRIVATE forte-com-opc_ua)
-target_include_directories(forte-com-opc_ua
-                           PUBLIC ${FORTE_COM_OPC_UA_INCLUDE_DIR}
+target_include_directories(forte-global
+                           INTERFACE ${FORTE_COM_OPC_UA_INCLUDE_DIR}
 )
 target_include_directories(forte-com-opc_ua
                            PUBLIC ${FORTE_COM_OPC_UA_ENCRYPTION_INCLUDE_DIR}
