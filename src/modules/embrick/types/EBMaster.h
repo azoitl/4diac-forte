@@ -19,6 +19,7 @@
 #include "core/datatypes/forte_uint.h"
 #include "core/datatypes/forte_udint.h"
 #include "core/datatypes/forte_wstring.h"
+#include "EBBusAdapter.h"
 
 class FORTE_EBMaster final : public forte::core::io::IOConfigFBMultiMaster {
     DECLARE_FIRMWARE_FB(FORTE_EBMaster)

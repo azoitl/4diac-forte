@@ -11,7 +11,8 @@
  *   Johannes Messmer - initial API and implementation and/or initial documentation
  *   Jose Cabral - Cleaning of namespaces
  *******************************************************************************/
-
+#include "handle.h"
+#include "slave.h"
 #include "core/io/mapper/io_mapper.h"
 
 EmbrickSlaveHandle::EmbrickSlaveHandle(forte::core::io::IODeviceController *paController,
