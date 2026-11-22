@@ -14,8 +14,7 @@
 #include "ec_module.h"
 
 namespace forte::eclipse4diac::io::ethercat {
-  ECModuleHandler::ECModuleHandler(ECBusHandler *paBus, 
-                                   size_t paDeviceIndex) : 
+  ECModuleHandler::ECModuleHandler(ECBusHandler &paBus, size_t paDeviceIndex) :
       ECBusDeviceHandler(paBus, DeviceType::ECModule, paDeviceIndex) {
   }
 

@@ -19,7 +19,7 @@
 #include <algorithm>
 
 namespace forte::eclipse4diac::io::ethercat {
-  ECBusDeviceHandler::ECBusDeviceHandler(ECBusHandler *paBus, DeviceType paDeviceType, size_t paDeviceIndex) :
+  ECBusDeviceHandler::ECBusDeviceHandler(ECBusHandler &paBus, DeviceType paDeviceType, size_t paDeviceIndex) :
       mDelegate(nullptr),
       mDeviceIndex(paDeviceIndex),
       mDeviceType(paDeviceType),
@@ -34,7 +34,7 @@ namespace forte::eclipse4diac::io::ethercat {
     dropHandles();
 
     if (mDelegate != nullptr) {
-      if (mBus != nullptr && mBus->isShuttingDown()) {
+      if (mBus.isShuttingDown()) {
         mDelegate = nullptr;
         return;
       }
@@ -78,15 +78,15 @@ namespace forte::eclipse4diac::io::ethercat {
 
   void ECBusDeviceHandler::dropHandles() {
     util::CCriticalRegion criticalRegion(mHandleMutex);
-    forte::io::IOMapper &mapper = mBus->getIOMapper();
+    forte::io::IOMapper &mapper = mBus.getIOMapper();
 
-    if (mBus != nullptr && mBus->isShuttingDown()) {
+    if (mBus.isShuttingDown()) {
       deregisterHandles(mapper);
       return;
     }
 
-    if (mBus != nullptr && mBus->isLoopPrepared()) {
-      ECDeviceHandler *device = mBus->getParentDevice(this);
+    if (mBus.isLoopPrepared()) {
+      ECDeviceHandler *device = mBus.getParentDevice(this);
       if (device != nullptr) {
         auto persistHandleOffset = [&](ECDeviceHandle &handle) {
           for (EntryReg &reg : device->mECDeviceModel.mEntryRegList) {

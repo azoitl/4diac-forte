@@ -27,7 +27,7 @@ namespace forte::eclipse4diac::io::ethercat {
 
       void setConfig(struct ECBusDeviceHandler::Config *paConfig) override;
 
-      ECModuleHandler(ECBusHandler *paBus, size_t paDeviceIndex);
+      ECModuleHandler(ECBusHandler &paBus, size_t paDeviceIndex);
 
       uint32_t moduleIdent() const {
         return mConfig.mModuleIdent;

@@ -32,7 +32,7 @@ namespace forte::eclipse4diac::io::ethercat {
 
       void setConfig(struct ECBusDeviceHandler::Config *paConfig) override;
 
-      ECDeviceHandler(ECBusHandler *paBus, ECBusDeviceHandler::DeviceType paDeviceType, size_t paDeviceIndex);
+      ECDeviceHandler(ECBusHandler &paBus, ECBusDeviceHandler::DeviceType paDeviceType, size_t paDeviceIndex);
 
     protected:
       struct Config mConfig;

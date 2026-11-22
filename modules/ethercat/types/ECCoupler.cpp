@@ -77,7 +77,7 @@ namespace forte::eclipse4diac::io::ethercat {
 
   bool FORTE_ECCoupler::createSlaveHandler() {  
     auto &bus = *static_cast<ECBusHandler *>(&getController());
-    auto *handler = new ECDeviceHandler(&bus, ECBusDeviceHandler::DeviceType::ECCoupler, mIndex);
+    auto *handler = new ECDeviceHandler(bus, ECBusDeviceHandler::DeviceType::ECCoupler, mIndex);
     ECDeviceHandler::Config cfg{};
     cfg.mAlias = static_cast<TForteUInt16>(Config().Alias);
     cfg.mPosition = static_cast<TForteUInt16>(Config().Position);

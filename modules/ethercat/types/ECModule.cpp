@@ -204,7 +204,7 @@ namespace forte::eclipse4diac::io::ethercat {
 
   bool FORTE_ECModule::createSlaveHandler() {
     auto &bus = *static_cast<ECBusHandler *>(&getController());
-    auto *handler = new ECModuleHandler(&bus, mIndex);
+    auto *handler = new ECModuleHandler(bus, mIndex);
     ECModuleHandler::Config cfg{};
     cfg.mModuleIdent = static_cast<TForteUInt32>(Config().ModuleIdent);
     cfg.mSlot = static_cast<TForteUInt16>(Config().Slot);

@@ -82,7 +82,7 @@ namespace forte::eclipse4diac::io::ethercat {
       void initBuffer(uint16_t paDataSendLength, uint16_t paDataRecvLength);
 
     protected:
-      ECBusDeviceHandler(ECBusHandler *paBus, DeviceType paDeviceType, size_t paDeviceIndex);
+      ECBusDeviceHandler(ECBusHandler &paBus, DeviceType paDeviceType, size_t paDeviceIndex);
       virtual ~ECBusDeviceHandler();
 
     private:
@@ -91,7 +91,7 @@ namespace forte::eclipse4diac::io::ethercat {
       void deregisterHandles(forte::io::IOMapper &mapper);
 
       size_t mDeviceIndex;
-      ECBusHandler *mBus;
+      ECBusHandler &mBus;
 
       uint16_t mDataSendLength;
       uint16_t mDataRecvLength;

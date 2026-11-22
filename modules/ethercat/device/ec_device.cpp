@@ -15,9 +15,9 @@
 
 namespace forte::eclipse4diac::io::ethercat {
 
-  ECDeviceHandler::ECDeviceHandler(ECBusHandler *paBus, 
-                                   ECBusDeviceHandler::DeviceType paDeviceType, 
-                                   size_t paDeviceIndex) : 
+  ECDeviceHandler::ECDeviceHandler(ECBusHandler &paBus,
+                                   ECBusDeviceHandler::DeviceType paDeviceType,
+                                   size_t paDeviceIndex) :
       ECBusDeviceHandler(paBus, paDeviceType, paDeviceIndex) {
   }
 
